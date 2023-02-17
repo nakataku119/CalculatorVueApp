@@ -6,7 +6,6 @@ import { PlusCommand } from "./PlusCommand";
 
 export class CommandManager {
   commandsHistory: Command[];
-  currentCommand: Command;
   commandClasses = new Map<string, any>([
     ["+", PlusCommand],
     ["-", MinusCommand],
@@ -14,15 +13,19 @@ export class CommandManager {
     ["÷", DivisionCommand],
     ["=", PlusCommand],
   ]);
+  currentCommandCursor: number = 0;
 
-  constructor(
-    commandsHistory: Command[] = [new PlusCommand()],
-    currentCommand: Command = commandsHistory[commandsHistory.length - 1]
-  ) {
+  constructor(commandsHistory: Command[] = [new PlusCommand()]) {
     this.commandsHistory = commandsHistory;
-    this.currentCommand = currentCommand;
   }
-
+  /**
+   * 入力された数字の合計を計算して返す
+   *
+   *
+   *
+   * @returns 計算結果
+   *
+   */
   calculateAnswer() {
     let answer: number = 0;
     this.commandsHistory.forEach((command, index) => {
@@ -32,24 +35,35 @@ export class CommandManager {
     });
     return answer;
   }
-
-  getNumber() {
+  /**
+   * 表示する数字を取得
+   *
+   *
+   *
+   * @returns 表示する数字の文字列
+   *
+   */
+  getNumberString() {
     if (this.currentCommand.number === "") {
       return String(this.calculateAnswer());
     } else {
       return this.currentCommand.number;
     }
   }
-
+  /**
+   * 押されたキーボードを追加
+   *
+   *
+   *
+   * @param key - 押されたキー
+   *
+   */
   addKey(key: string) {
-    this.commandsHistory.splice(
-      this.commandsHistory.indexOf(this.currentCommand) + 1
-    );
+    this.commandsHistory.splice(this.currentCommandCursor + 1);
     if (key === "CA") {
       // 入力中のコマンドと履歴を全てリセット
       this.commandsHistory = [new PlusCommand()];
-      this.currentCommand =
-        this.commandsHistory[this.commandsHistory.length - 1];
+      this.currentCommandCursor = 0;
     } else if (this.commandClasses.get(key)) {
       // 入力中のコマンドのシンボルを変更
       if (this.currentCommand.number === "") {
@@ -59,8 +73,7 @@ export class CommandManager {
       // 新しいコマンドの作成
       const commandClass = this.commandClasses.get(key);
       this.commandsHistory.push(new commandClass());
-      this.currentCommand =
-        this.commandsHistory[this.commandsHistory.length - 1];
+      this.currentCommandCursor++;
     } else {
       this.currentCommand.addNumber(key);
     }
@@ -68,23 +81,18 @@ export class CommandManager {
   }
 
   undo() {
-    if (this.commandsHistory.indexOf(this.currentCommand) > 0) {
-      const currentCommandCursor = this.commandsHistory.indexOf(
-        this.currentCommand
-      );
-      this.currentCommand = this.commandsHistory[currentCommandCursor - 1];
+    if (this.currentCommandCursor > 0) {
+      this.currentCommandCursor--;
     }
   }
 
-  redo() {
-    if (
-      this.commandsHistory.indexOf(this.currentCommand) <
-      this.commandsHistory.length - 1
-    ) {
-      const currentCommandCursor = this.commandsHistory.indexOf(
-        this.currentCommand
-      );
-      this.currentCommand = this.commandsHistory[currentCommandCursor + 1];
+  public redo() {
+    if (this.currentCommandCursor < this.commandsHistory.length - 1) {
+      this.currentCommandCursor++;
     }
+  }
+
+  private get currentCommand(): Command {
+    return this.commandsHistory[this.currentCommandCursor];
   }
 }

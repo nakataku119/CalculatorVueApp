@@ -21,7 +21,7 @@ const onClickButton = (key: string) => {
   updateNumberDisplayed();
 };
 const updateNumberDisplayed = () => {
-  calculator.numberDisplayed = Number(commandManager.getNumber());
+  calculator.numberDisplayed = Number(commandManager.getNumberString());
 };
 
 document.addEventListener("keydown", (event) => {
@@ -31,7 +31,7 @@ document.addEventListener("keydown", (event) => {
     } else {
       commandManager.undo();
     }
-    calculator.numberDisplayed = Number(commandManager.getNumber());
+    calculator.numberDisplayed = Number(commandManager.getNumberString());
   }
 });
 </script>
