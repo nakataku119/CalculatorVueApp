@@ -14,4 +14,8 @@ export class Command {
   calculate(answer: number): number {
     return answer + Number(this.number);
   }
+
+  isPrioritySymbol(): boolean {
+    return ["x", "÷"].includes(this.symbol);
+  }
 }

@@ -5,7 +5,7 @@ export class MultiplicationCommand extends Command {
     super("x", number);
   }
 
-  calculate(answer: number): number {
-    return answer * Number(this.number);
+  calculate(number: number): number {
+    return Number(this.number) * number;
   }
 }
