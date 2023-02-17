@@ -28,9 +28,17 @@ export class CommandManager {
    */
   calculateAnswer() {
     let answer: number = 0;
-    this.commandsHistory.forEach((command, index) => {
-      if (index) {
+    let commandsArr: Command[] = [];
+    this.commandsHistory.forEach((command) => {
+      if (command.isPrioritySymbol()) {
+        commandsArr[commandsArr.length - 1].number = String(
+          command.calculate(Number(commandsArr[commandsArr.length - 1].number))
+        );
+      } else {
+        commandsArr.push(command);
       }
+    });
+    commandsArr.forEach((command) => {
       answer = command.calculate(answer);
     });
     return answer;
@@ -44,7 +52,10 @@ export class CommandManager {
    *
    */
   getNumberString() {
-    if (this.currentCommand.number === "") {
+    if (
+      this.currentCommand.number === "" &&
+      !this.currentCommand.isPrioritySymbol()
+    ) {
       return String(this.calculateAnswer());
     } else {
       return this.currentCommand.number;
