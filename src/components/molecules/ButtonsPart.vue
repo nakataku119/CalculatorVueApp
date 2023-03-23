@@ -46,7 +46,7 @@ document.addEventListener("keydown", (event) => {
       :key="number"
       :value="number"
       @click="onClickButton(number)"
-      class="btn btn-outline-primary"
+      class="btn btn-outline-primary m-1"
     />
   </div>
   <div v-for="symbols in symbolsOfButton">
@@ -55,7 +55,7 @@ document.addEventListener("keydown", (event) => {
       :key="symbol"
       :value="symbol"
       @click="onClickButton(symbol)"
-      class="btn btn-outline-success"
+      class="btn btn-outline-success m-1"
     />
   </div>
 </template>
